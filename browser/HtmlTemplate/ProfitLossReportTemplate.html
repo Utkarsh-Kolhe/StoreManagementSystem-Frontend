@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Sales Revenue Report</title>
+    <title>Profit &amp; Loss Financial Statement</title>
 
     <style>
         @page {
@@ -42,7 +42,7 @@
         .top-border {
             height: 3px;
             width: 100%;
-            background: #2a1e5c;
+            background: #064e3b;
             margin-bottom: 2.5mm;
         }
 
@@ -55,7 +55,7 @@
         }
 
         .brand-name {
-            color: #2a1e5c;
+            color: #064e3b;
             font-size: 20px;
             font-weight: 800;
             text-transform: uppercase;
@@ -151,7 +151,7 @@
         }
 
         .summary-card.highlight .summary-value {
-            color: #047857;
+            color: #059669;
         }
 
         .summary-description {
@@ -179,13 +179,13 @@
         }
 
         .sales-table th {
-            background: #2a1e5c;
+            background: #064e3b;
             color: #ffffff;
             padding: 2mm 2mm;
             font-size: 8px;
             font-weight: 700;
             text-transform: uppercase;
-            border: 1px solid #2a1e5c;
+            border: 1px solid #064e3b;
         }
 
         .sales-table td {
@@ -214,7 +214,15 @@
         }
 
         .text-success {
-            color: #047857 !important;
+            color: #059669 !important;
+        }
+
+        .text-cogs {
+            color: #d97706 !important;
+        }
+
+        .text-net {
+            color: #059669 !important;
         }
 
         .grand-total-row td {
@@ -224,36 +232,17 @@
             color: #0f172a;
         }
 
-        .payment-summary {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 3mm;
-            margin-top: 2.5mm;
-        }
-
-        .payment-summary-card {
-            padding: 2mm;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background: #f8fafc;
-        }
-
-        .payment-summary-card span {
-            display: block;
-        }
-
-        .payment-summary-label {
-            font-size: 8px;
-            color: #64748b;
+        .margin-pill {
+            display: inline-block;
+            padding: 0.8mm 1.5mm;
+            border-radius: 4px;
+            font-size: 7.5px;
             font-weight: 700;
         }
 
-        .payment-summary-value {
-            margin-top: 0.5mm;
-            font-size: 11px;
-            color: #0f172a;
-            font-weight: 800;
-        }
+        .margin-pill.high-margin { background-color: #ecfdf5; color: #059669; }
+        .margin-pill.low-margin { background-color: #fef9c3; color: #a16207; }
+        .margin-pill.loss-margin { background-color: #fee2e2; color: #dc2626; }
 
         .footer {
             margin-top: 3mm;
@@ -356,10 +345,8 @@
             border-radius: 50%;
         }
 
-        .payment-value.cash .payment-dot { background: #059669; }
-        .payment-value.upi .payment-dot { background: #7e22ce; }
-        .payment-value.card .payment-dot { background: #2563eb; }
-        .payment-value.other .payment-dot { background: #64748b; }
+        .payment-value.cogs .payment-dot { background: #d97706; }
+        .payment-value.profit .payment-dot { background: #059669; }
 
         .payment-value div {
             display: flex;
@@ -389,15 +376,15 @@
             <div class="header">
                 <div>
                     <div class="brand-name">Shrisha Ladies Shopee</div>
-                    <div class="report-title">Sales &amp; Revenue Report</div>
+                    <div class="report-title">Profit &amp; Loss Financial Statement</div>
                     <div class="report-subtitle">
-                        Detailed billing transactions, revenue summary and payment collection statement
+                        Comprehensive analysis of sales revenue, cost of inventory sold (COGS), and net profit margins
                     </div>
                 </div>
 
                 <div class="report-meta">
                     <div><strong>Report Generated:</strong> {{GeneratedDate}}</div>
-                    <div><strong>Report Type:</strong> Sales Register</div>
+                    <div><strong>Report Type:</strong> P&amp;L Accounting Statement</div>
                     <div><strong>Document:</strong> Computer Generated Report</div>
                 </div>
             </div>
@@ -415,11 +402,6 @@
                 </div>
 
                 <div class="filter-item">
-                    <span class="filter-label">Payment Mode</span>
-                    <span class="filter-value">{{PaymentMode}}</span>
-                </div>
-
-                <div class="filter-item">
                     <span class="filter-label">Search Criteria</span>
                     <span class="filter-value">{{SearchText}}</span>
                 </div>
@@ -434,138 +416,99 @@
                 </div>
 
                 <div class="summary-card">
-                    <div class="summary-label">Items Sold</div>
-                    <div class="summary-value">{{TotalItemsSold}}</div>
-                    <div class="summary-description">Total units</div>
+                    <div class="summary-label">Realized Revenue</div>
+                    <div class="summary-value">₹{{TotalRevenue}}</div>
+                    <div class="summary-description">Total income</div>
                 </div>
 
                 <div class="summary-card">
-                    <div class="summary-label">Gross Billing</div>
-                    <div class="summary-value">₹{{TotalGrossSales}}</div>
-                    <div class="summary-description">Before discount</div>
+                    <div class="summary-label">Cost of Goods (COGS)</div>
+                    <div class="summary-value text-cogs">₹{{TotalCOGS}}</div>
+                    <div class="summary-description">Inventory expense</div>
                 </div>
 
                 <div class="summary-card">
                     <div class="summary-label">Total Discount</div>
-                    <div class="summary-value text-danger">₹{{TotalDiscount}}</div>
+                    <div class="summary-value text-danger">- ₹{{TotalDiscount}}</div>
                     <div class="summary-description">Discount given</div>
                 </div>
 
                 <div class="summary-card highlight">
-                    <div class="summary-label">Net Collection</div>
-                    <div class="summary-value">₹{{TotalRevenue}}</div>
-                    <div class="summary-description">Amount collected</div>
+                    <div class="summary-label">Net Realized Profit</div>
+                    <div class="summary-value">₹{{NetProfit}}</div>
+                    <div class="summary-description">Retainable profit</div>
                 </div>
 
                 <div class="summary-card">
-                    <div class="summary-label">Average Ticket</div>
-                    <div class="summary-value">₹{{AverageTicket}}</div>
-                    <div class="summary-description">Average per bill</div>
+                    <div class="summary-label">Profit Margin</div>
+                    <div class="summary-value">{{ProfitMargin}}%</div>
+                    <div class="summary-description">Margin percentage</div>
                 </div>
             </div>
 
             <!-- Analytics / Charts (Hidden on page 2 onwards) -->
             <div class="analytics-section" {{SectionStyle}}>
-                <div class="analytics-card revenue-chart-card">
+                <div class="analytics-card">
                     <div class="analytics-header">
                         <div>
-                            <div class="analytics-title">Daily Revenue &amp; Invoice Flow</div>
-                            <div class="analytics-subtitle">Revenue collection and invoice volume across the selected period</div>
+                            <div class="analytics-title">Daily Revenue vs. Cost Analysis</div>
+                            <div class="analytics-subtitle">Comparison of sales income, inventory expense, and profit</div>
                         </div>
                     </div>
                     <div class="chart-image-container">
-                        <img src="{{RevenueChart}}" class="revenue-chart-image" alt="Daily Revenue Chart">
+                        <img src="{{ComparisonChart}}" class="revenue-chart-image" alt="Revenue vs Cost Chart">
                     </div>
                 </div>
 
-                <div class="analytics-card payment-chart-card">
+                <div class="analytics-card">
                     <div class="analytics-header">
                         <div>
-                            <div class="analytics-title">Payment Distribution</div>
-                            <div class="analytics-subtitle">Collection split by payment mode</div>
+                            <div class="analytics-title">Capital Split Breakdown</div>
+                            <div class="analytics-subtitle">COGS inventory allocation vs. retainable profit</div>
                         </div>
                     </div>
                     <div class="payment-chart-content">
                         <div class="payment-chart-image-container">
-                            <img src="{{PaymentChart}}" class="payment-chart-image" alt="Payment Distribution">
+                            <img src="{{MarginChart}}" class="payment-chart-image" alt="Capital Split Chart">
                         </div>
                         <div class="payment-chart-values">
-                            <div class="payment-value cash">
+                            <div class="payment-value cogs">
                                 <span class="payment-dot"></span>
                                 <div>
-                                    <span class="payment-name">Cash</span>
-                                    <strong>₹{{TotalCash}}</strong>
+                                    <span class="payment-name">COGS Cost</span>
+                                    <strong>₹{{TotalCOGS}}</strong>
                                 </div>
                             </div>
-                            <div class="payment-value upi">
+                            <div class="payment-value profit">
                                 <span class="payment-dot"></span>
                                 <div>
-                                    <span class="payment-name">UPI</span>
-                                    <strong>₹{{TotalUpi}}</strong>
-                                </div>
-                            </div>
-                            <div class="payment-value card">
-                                <span class="payment-dot"></span>
-                                <div>
-                                    <span class="payment-name">Card</span>
-                                    <strong>₹{{TotalCard}}</strong>
-                                </div>
-                            </div>
-                            <div class="payment-value other">
-                                <span class="payment-dot"></span>
-                                <div>
-                                    <span class="payment-name">Other</span>
-                                    <strong>₹{{TotalOther}}</strong>
+                                    <span class="payment-name">Net Profit</span>
+                                    <strong>₹{{NetProfit}}</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Payment Collection Summary (Moved before Statement of Invoiced Sales) -->
-            <div class="section-title" {{SectionStyle}}>
-                Payment Collection Summary
-            </div>
-
-            <div class="payment-summary" {{SectionStyle}}>
-                <div class="payment-summary-card">
-                    <span class="payment-summary-label">Cash Collection</span>
-                    <span class="payment-summary-value">₹{{TotalCash}}</span>
-                </div>
-                <div class="payment-summary-card">
-                    <span class="payment-summary-label">UPI Collection</span>
-                    <span class="payment-summary-value">₹{{TotalUpi}}</span>
-                </div>
-                <div class="payment-summary-card">
-                    <span class="payment-summary-label">Card Collection</span>
-                    <span class="payment-summary-value">₹{{TotalCard}}</span>
-                </div>
-                <div class="payment-summary-card">
-                    <span class="payment-summary-label">Other Collection</span>
-                    <span class="payment-summary-value">₹{{TotalOther}}</span>
                 </div>
             </div>
 
             <!-- Transaction Table -->
             <div class="section-title">
-                Statement of Invoiced Sales
+                Invoice Profitability Register
             </div>
 
             <table class="sales-table">
                 <thead>
                     <tr>
-                        <th style="width: 3%;">#</th>
-                        <th style="width: 11%;">Invoice No</th>
-                        <th style="width: 12%;">Date &amp; Time</th>
-                        <th style="width: 15%;">Customer</th>
-                        <th style="width: 9%;">City</th>
-                        <th style="width: 6%;">Qty</th>
-                        <th style="width: 9%;">Subtotal</th>
-                        <th style="width: 8%;">Discount</th>
-                        <th style="width: 10%;">Net Amount</th>
-                        <th style="width: 7%;">Mode</th>
-                        <th style="width: 10%;">Cashier</th>
+                        <th style="width: 4%;">#</th>
+                        <th style="width: 13%;">Invoice No</th>
+                        <th style="width: 10%;">Date</th>
+                        <th style="width: 16%;">Customer</th>
+                        <th style="width: 11%;">Mobile</th>
+                        <th style="width: 6%;" class="text-center">Items</th>
+                        <th style="width: 10%;" class="text-right">Billed (₹)</th>
+                        <th style="width: 10%;" class="text-right">COGS (₹)</th>
+                        <th style="width: 10%;" class="text-right">Profit (₹)</th>
+                        <th style="width: 10%;" class="text-center">Margin</th>
                     </tr>
                 </thead>
 
@@ -575,12 +518,12 @@
 
                 <tfoot>
                     <tr class="grand-total-row">
-                        <td colspan="5" class="text-right">TOTAL SUMMARY</td>
+                        <td colspan="5" class="text-right">Aggregate Profitability Total</td>
                         <td class="text-center">{{TotalItemsSold}}</td>
-                        <td class="text-right">₹{{TotalGrossSales}}</td>
-                        <td class="text-right text-danger">₹{{TotalDiscount}}</td>
-                        <td class="text-right text-success">₹{{TotalRevenue}}</td>
-                        <td colspan="2"></td>
+                        <td class="text-right">₹{{TotalRevenue}}</td>
+                        <td class="text-right text-cogs">₹{{TotalCOGS}}</td>
+                        <td class="text-right text-success">₹{{NetProfit}}</td>
+                        <td class="text-center text-success">{{ProfitMargin}}%</td>
                     </tr>
                 </tfoot>
             </table>
@@ -589,7 +532,7 @@
         <!-- Footer -->
         <div class="footer">
             <span>Store: <strong>Shrisha Ladies Shopee</strong></span>
-            <span>This is a computer-generated sales report.</span>
+            <span>This is a computer-generated accounting balance statement.</span>
             <span>Page {{PageNumber}} of {{TotalPages}}</span>
         </div>
 
