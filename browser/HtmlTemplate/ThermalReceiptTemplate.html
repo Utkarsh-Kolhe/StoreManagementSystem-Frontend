@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+
+        body {
+            width: 74mm;
+            margin: 3mm auto;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .font-bold {
+            font-weight: bold;
+        }
+
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 5px 0;
+        }
+
+        .divider-double {
+            border-top: 2px solid #000;
+            margin: 6px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        th {
+            border-bottom: 1px dashed #000;
+            padding: 2px 0;
+        }
+
+        td {
+            padding: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center font-bold" style="font-size: 15px;">SHRISHA LADIES SHOPEE</div>
+    <div class="text-center">Near Main Bazar, Indapur</div>
+    <div class="text-center">Phone: +91 8600217661</div>
+
+    <div class="divider"></div>
+    <div><strong>Invoice:</strong> {{InvoiceNo}}</div>
+    <div><strong>Date:</strong> {{BillDate}}</div>
+    <div><strong>Customer:</strong> {{CustomerName}} ({{MobileNumber}})</div>
+    <div class="divider"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: left;">Item</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: right;">Rate</th>
+                <th style="text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ItemRows}}
+        </tbody>
+    </table>
+
+    <div class="divider"></div>
+    <table>
+        <tr>
+            <td>Gross Total:</td>
+            <td class="text-right">₹{{SubTotal}}</td>
+        </tr>
+        <tr>
+            <td>Total Discount:</td>
+            <td class="text-right">-₹{{TotalDiscount}}</td>
+        </tr>
+        <tr>
+            <td>Round Off:</td>
+            <td class="text-right">{{RoundOffPrefix}}₹{{RoundOff}}</td>
+        </tr>
+        <tr class="font-bold" style="font-size: 13px;">
+            <td>GRAND TOTAL:</td>
+            <td class="text-right">₹{{GrandTotal}}</td>
+        </tr>
+        <tr>
+            <td>Paid via {{PaymentMode}}:</td>
+            <td class="text-right">₹{{PaidAmount}}</td>
+        </tr>
+    </table>
+
+    <div class="divider-double"></div>
+    <div class="text-center">Thank You! Visit Again!</div>
+</body>
+</html>

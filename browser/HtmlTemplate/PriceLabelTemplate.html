@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Price Label</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        width: 389px;
+        font-family: 'Roboto', sans-serif;
+        background-color: #fff;
+        color: #000;
+      }
+
+      .container {
+        border: 2px solid black;
+        padding: 15px;
+        border-radius: 16px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 22px;
+        font-weight: 700;
+        margin: 4px 0;
+      }
+
+      h3 {
+        font-size: 14px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 4px 0;
+      }
+
+      span {
+        font-size: 12px;
+      }
+
+      .price {
+        font-size: 26px;
+        margin: 2px 0;
+      }
+
+      .line {
+        border-bottom: 1px dashed black;
+        width: 90%;
+        margin: 8px 0;
+      }
+
+      .informationTable {
+        width: 95%;
+        margin: 4px 0;
+        border-collapse: collapse;
+        font-size: 12px;
+        text-align: left;
+      }
+
+      .informationTable td {
+        padding: 2px 0;
+      }
+
+      .box-key {
+        width: 20%;
+        font-weight: bold;
+      }
+
+      .box {
+        width: 30%;
+      }
+
+      .footer-note {
+        font-size: 11px;
+        margin-top: 4px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="PriceLabel">
+      <h1>Shrisha Ladies Shopee</h1>
+      <div class="line"></div>
+      
+      <h3>{{ProductName}}</h3>
+      <h1 class="price">₹ {{Price}}</h1>
+      <span>(Inclusive of all taxes)</span>
+      
+      <div class="line"></div>
+
+      <table class="informationTable">
+        <tr>
+          <td class="box-key">Size</td>
+          <td class="box">: {{Size}}</td>
+          <td class="box-key">Qty.</td>
+          <td class="box">: 1</td>
+        </tr>
+        <tr>
+          <td class="box-key">MFG.</td>
+          <td class="box">: {{mfgDAte}}</td>
+          <td class="box-key">EXP.</td>
+          <td class="box">: {{expDate}}</td>
+        </tr>
+      </table>
+
+      <div class="line"></div>
+      
+      <h3>Product Code</h3>
+      <h1>{{productCode}}</h1>
+      <span class="footer-note">Thank you for shopping with us!</span>
+    </div>
+  </body>
+</html>

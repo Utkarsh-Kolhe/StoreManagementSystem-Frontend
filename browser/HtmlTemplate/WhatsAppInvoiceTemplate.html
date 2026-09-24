@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tax Invoice</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .invoice-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 14mm 16mm;
+            position: relative;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Top Accent Banner */
+        .top-stripe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #881337, #be123c, #fda4af);
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 6mm;
+            border-bottom: 1.5px solid #f1f5f9;
+        }
+
+        .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #881337;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            font-weight: 600;
+            color: #9f1239;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 1px;
+        }
+
+        .brand-address {
+            font-size: 10.5px;
+            line-height: 1.5;
+            color: #64748b;
+            margin-top: 3mm;
+        }
+
+        .invoice-badge-box {
+            text-align: right;
+        }
+
+        .invoice-chip {
+            display: inline-block;
+            background: #fff1f2;
+            color: #9f1239;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            border: 1px solid #fecdd3;
+        }
+
+        .invoice-number-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 2.5mm;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .invoice-date {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 1mm;
+        }
+
+        /* Billed To & Payment Meta Cards */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6mm;
+            margin-top: 6mm;
+        }
+
+        .meta-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 4mm 5mm;
+        }
+
+        .card-header-label {
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            margin-bottom: 2mm;
+        }
+
+        .customer-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .meta-row {
+            font-size: 11px;
+            color: #475569;
+            margin-top: 1mm;
+            display: flex;
+            align-items: center;
+        }
+
+        .meta-data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .meta-data-table td {
+            font-size: 11px;
+            padding: 1.5mm 0;
+            color: #475569;
+        }
+
+        .meta-data-table td.strong-val {
+            font-weight: 600;
+            text-align: right;
+            color: #0f172a;
+        }
+
+        /* Items Table */
+        .items-section {
+            margin-top: 7mm;
+            flex-grow: 1;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .items-table thead th {
+            background: #0f172a;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 3.5mm 3mm;
+        }
+
+        .items-table thead th.text-left { text-align: left; }
+        .items-table thead th.text-center { text-align: center; }
+        .items-table thead th.text-right { text-align: right; }
+
+        .items-table tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .items-table tbody tr:nth-child(even) {
+            background: #fdfdfd;
+        }
+
+        .items-table tbody td {
+            padding: 3.5mm 3mm;
+            font-size: 11px;
+            vertical-align: middle;
+            color: #334155;
+        }
+
+        .product-title {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 11.5px;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            margin-right: 4px;
+            margin-top: 3px;
+        }
+
+        .tag-pill.code {
+            background: #fff1f2;
+            color: #9f1239;
+        }
+
+        /* Summary & Totals */
+        .bottom-section {
+            margin-top: 6mm;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 8mm;
+            align-items: start;
+        }
+
+        .terms-box {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 4mm 5mm;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .terms-heading {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 2mm;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .terms-list {
+            font-size: 9.5px;
+            color: #64748b;
+            line-height: 1.5;
+            padding-left: 4mm;
+        }
+
+        .terms-list li {
+            margin-bottom: 1mm;
+        }
+
+        .totals-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .totals-table td {
+            padding: 2.2mm 4mm;
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .totals-table td.amount-col {
+            text-align: right;
+            font-weight: 600;
+            color: #1e293b;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .discount-text {
+            color: #16a34a !important;
+        }
+
+        .grand-total-row td {
+            background: #881337;
+            color: #ffffff !important;
+            padding: 3.5mm 4mm;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .grand-total-row td.amount-col {
+            font-size: 15px;
+            color: #ffffff !important;
+        }
+
+        .paid-status-box {
+            margin-top: 3mm;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 6px;
+            padding: 2.5mm 3.5mm;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        /* Footer */
+        .footer-bar {
+            margin-top: 8mm;
+            padding-top: 4mm;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .footer-bold {
+            color: #475569;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-container">
+    <div class="top-stripe"></div>
+
+    <div class="main-body">
+        <!-- Header -->
+        <div class="header-section">
+            <div>
+                <div class="brand-title">Shrisha Ladies Shopee</div>
+                <div class="brand-sub">Exclusive Women's Fashion &amp; Boutique</div>
+                <div class="brand-address">
+                    Near Main Bazar, Indapur, Pune - 413106<br>
+                    Maharashtra, India &bull; <strong>Mo:</strong> +91 9876543210
+                </div>
+            </div>
+            <div class="invoice-badge-box">
+                <div class="invoice-chip">TAX INVOICE</div>
+                <div class="invoice-number-title">#{{InvoiceNo}}</div>
+                <div class="invoice-date">Date: {{BillDate}}</div>
+            </div>
+        </div>
+
+        <!-- Billed To & Payment Meta -->
+        <div class="meta-grid">
+            <div class="meta-card">
+                <div class="card-header-label">Billed To</div>
+                <div class="customer-name">{{CustomerName}}</div>
+                <div class="meta-row">&#128222;&nbsp; +91 {{MobileNumber}}</div>
+                <div class="meta-row">&#128205;&nbsp; {{City}}</div>
+            </div>
+
+            <div class="meta-card">
+                <div class="card-header-label">Payment Information</div>
+                <table class="meta-data-table">
+                    <tr>
+                        <td>Payment Mode</td>
+                        <td class="strong-val">{{PaymentMode}}</td>
+                    </tr>
+                    <tr>
+                        <td>Transaction Ref</td>
+                        <td class="strong-val">{{TransactionRef}}</td>
+                    </tr>
+                    <tr>
+                        <td>Place of Supply</td>
+                        <td class="strong-val">Maharashtra (27)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="items-section">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th class="text-left" style="width: 5%;">#</th>
+                        <th class="text-left" style="width: 43%;">Item Description</th>
+                        <th class="text-center" style="width: 10%;">Qty</th>
+                        <th class="text-right" style="width: 14%;">Rate</th>
+                        <th class="text-right" style="width: 12%;">Discount</th>
+                        <th class="text-right" style="width: 16%;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ItemRows}}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Financial Summary & Terms -->
+        <div class="bottom-section">
+            <div class="terms-box">
+                <div class="terms-heading">Terms &amp; Exchange Conditions</div>
+                <ol class="terms-list">
+                    <li>Exchange accepted within 7 days with original bill tags intact.</li>
+                    <li>No exchange or returns on discounted/sale merchandise.</li>
+                    <li>Goods once sold will not be refunded in cash.</li>
+                    <li>Thank you for shopping with us! Visit again.</li>
+                </ol>
+            </div>
+
+            <div class="totals-card">
+                <table class="totals-table">
+                    <tr>
+                        <td>Gross Subtotal</td>
+                        <td class="amount-col">₹{{SubTotal}}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Discount</td>
+                        <td class="amount-col discount-text">- ₹{{TotalDiscount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Round Off</td>
+                        <td class="amount-col">{{RoundOffPrefix}}₹{{RoundOff}}</td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td>Grand Total</td>
+                        <td class="amount-col">₹{{GrandTotal}}</td>
+                    </tr>
+                </table>
+
+                <div class="paid-status-box">
+                    <span>Amount Paid ( {{PaymentMode}} )</span>
+                    <span>₹{{PaidAmount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+        <span>GSTIN: <span class="footer-bold">27AAAAA0000A1Z5</span></span>
+        <span>Computer Generated Tax Invoice</span>
+        <span>Helpline: <span class="footer-bold">+91 9876543210</span></span>
+    </div>
+</div>
+
+</body>
+</html>

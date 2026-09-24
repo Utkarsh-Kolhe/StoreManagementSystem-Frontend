@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sales Revenue Report</title>
+
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            background: #ffffff;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #1e293b;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .report-page {
+            width: 297mm;
+            min-height: 210mm;
+            padding: 10mm 12mm;
+            background: #ffffff;
+        }
+
+        .top-border {
+            height: 5px;
+            width: 100%;
+            background: #2a1e5c;
+            margin-bottom: 7mm;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 5mm;
+        }
+
+        .brand-name {
+            color: #2a1e5c;
+            font-size: 23px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .report-title {
+            margin-top: 2mm;
+            color: #334155;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .report-subtitle {
+            margin-top: 1.5mm;
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        .report-meta {
+            text-align: right;
+            font-size: 10px;
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        .report-meta strong {
+            color: #0f172a;
+        }
+
+        .filter-summary {
+            display: flex;
+            justify-content: space-between;
+            gap: 5mm;
+            margin-top: 5mm;
+            padding: 4mm;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+        }
+
+        .filter-item {
+            flex: 1;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 9px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+        }
+
+        .filter-value {
+            display: block;
+            margin-top: 1mm;
+            font-size: 11px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 3mm;
+            margin-top: 5mm;
+        }
+
+        .summary-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 3mm;
+            background: #ffffff;
+        }
+
+        .summary-card.highlight {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 8.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .summary-value {
+            margin-top: 1.5mm;
+            color: #0f172a;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .summary-card.highlight .summary-value {
+            color: #047857;
+        }
+
+        .summary-description {
+            margin-top: 1mm;
+            font-size: 8px;
+            color: #94a3b8;
+        }
+
+        .section-title {
+            margin-top: 6mm;
+            margin-bottom: 3mm;
+            color: #0f172a;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .sales-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .sales-table thead {
+            display: table-header-group;
+        }
+
+        .sales-table th {
+            background: #2a1e5c;
+            color: #ffffff;
+            padding: 3mm 2mm;
+            font-size: 8.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid #2a1e5c;
+        }
+
+        .sales-table td {
+            padding: 2.7mm 2mm;
+            font-size: 9px;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        .sales-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .sales-table .invoice {
+            color: #2a1e5c;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .sales-table .customer {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .sales-table .mobile {
+            display: block;
+            margin-top: 1mm;
+            color: #64748b;
+            font-size: 8px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-danger {
+            color: #dc2626 !important;
+        }
+
+        .text-success {
+            color: #047857 !important;
+        }
+
+        .payment-tag {
+            display: inline-block;
+            padding: 1.2mm 2mm;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .payment-tag.cash {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .payment-tag.upi {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        .payment-tag.card {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .grand-total-row td {
+            background: #f1f5f9;
+            border-top: 2px solid #94a3b8;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .payment-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 4mm;
+            margin-top: 5mm;
+        }
+
+        .payment-summary-card {
+            padding: 3mm;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: #f8fafc;
+        }
+
+        .payment-summary-card span {
+            display: block;
+        }
+
+        .payment-summary-label {
+            font-size: 9px;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .payment-summary-value {
+            margin-top: 1mm;
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .footer {
+            margin-top: 7mm;
+            padding-top: 3mm;
+            border-top: 1px solid #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            font-size: 8.5px;
+            color: #64748b;
+        }
+
+        .footer strong {
+            color: #334155;
+        }
+
+        /* =========================================================
+   ANALYTICS / GRAPHS
+   ========================================================= */
+
+        .analytics-section {
+            display: grid;
+            grid-template-columns: 1.65fr 1fr;
+            gap: 5mm;
+            margin-top: 5mm;
+        }
+
+        .analytics-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 7px;
+            background: #ffffff;
+            padding: 4mm;
+            min-height: 62mm;
+        }
+
+        .analytics-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 2.5mm;
+            margin-bottom: 3mm;
+        }
+
+        .analytics-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .analytics-subtitle {
+            margin-top: 1mm;
+            font-size: 8px;
+            color: #64748b;
+        }
+
+        .chart-image-container {
+            width: 100%;
+            height: 48mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .revenue-chart-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-chart-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5mm;
+        }
+
+        .payment-chart-image-container {
+            width: 55mm;
+            height: 48mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-chart-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-chart-values {
+            min-width: 35mm;
+        }
+
+        .payment-value {
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+            margin-bottom: 3mm;
+        }
+
+        .payment-dot {
+            width: 3mm;
+            height: 3mm;
+            min-width: 3mm;
+            border-radius: 50%;
+        }
+
+        .payment-value.cash .payment-dot {
+            background: #059669;
+        }
+
+        .payment-value.upi .payment-dot {
+            background: #7e22ce;
+        }
+
+        .payment-value.card .payment-dot {
+            background: #2563eb;
+        }
+
+        .payment-value.other .payment-dot {
+            background: #64748b;
+        }
+
+        .payment-value div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-name {
+            font-size: 8px;
+            color: #64748b;
+        }
+
+        .payment-value strong {
+            font-size: 9.5px;
+            color: #0f172a;
+            margin-top: 0.5mm;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="report-page">
+
+        <div class="top-border"></div>
+
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div class="brand-name">Shrisha Ladies Shopee</div>
+                <div class="report-title">Sales &amp; Revenue Report</div>
+                <div class="report-subtitle">
+                    Detailed billing transactions, revenue summary and payment collection statement
+                </div>
+            </div>
+
+            <div class="report-meta">
+                <div><strong>Report Generated:</strong> {{GeneratedDate}}</div>
+                <div><strong>Report Type:</strong> Sales Register</div>
+                <div><strong>Document:</strong> Computer Generated Report</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-summary">
+            <div class="filter-item">
+                <span class="filter-label">From Date</span>
+                <span class="filter-value">{{FromDate}}</span>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">To Date</span>
+                <span class="filter-value">{{ToDate}}</span>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Payment Mode</span>
+                <span class="filter-value">{{PaymentMode}}</span>
+            </div>
+
+            <div class="filter-item">
+                <span class="filter-label">Search Criteria</span>
+                <span class="filter-value">{{SearchText}}</span>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-grid">
+
+            <div class="summary-card">
+                <div class="summary-label">Total Invoices</div>
+                <div class="summary-value">{{TotalInvoices}}</div>
+                <div class="summary-description">Bills generated</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Items Sold</div>
+                <div class="summary-value">{{TotalItemsSold}}</div>
+                <div class="summary-description">Total units</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Gross Billing</div>
+                <div class="summary-value">₹{{TotalGrossSales}}</div>
+                <div class="summary-description">Before discount</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Total Discount</div>
+                <div class="summary-value text-danger">₹{{TotalDiscount}}</div>
+                <div class="summary-description">Discount given</div>
+            </div>
+
+            <div class="summary-card highlight">
+                <div class="summary-label">Net Collection</div>
+                <div class="summary-value">₹{{TotalRevenue}}</div>
+                <div class="summary-description">Amount collected</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-label">Average Ticket</div>
+                <div class="summary-value">₹{{AverageTicket}}</div>
+                <div class="summary-description">Average per bill</div>
+            </div>
+
+        </div>
+
+        <!-- Analytics -->
+        <div class="analytics-section">
+
+            <!-- Revenue Trend -->
+            <div class="analytics-card revenue-chart-card">
+                <div class="analytics-header">
+                    <div>
+                        <div class="analytics-title">
+                            Daily Revenue &amp; Invoice Flow
+                        </div>
+
+                        <div class="analytics-subtitle">
+                            Revenue collection and invoice volume across the selected period
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-image-container">
+                    <img src="{{RevenueChart}}" class="revenue-chart-image" alt="Daily Revenue Chart">
+                </div>
+            </div>
+
+
+            <!-- Payment Distribution -->
+            <div class="analytics-card payment-chart-card">
+                <div class="analytics-header">
+                    <div>
+                        <div class="analytics-title">
+                            Payment Distribution
+                        </div>
+
+                        <div class="analytics-subtitle">
+                            Collection split by payment mode
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-chart-content">
+
+                    <div class="payment-chart-image-container">
+                        <img src="{{PaymentChart}}" class="payment-chart-image" alt="Payment Distribution">
+                    </div>
+
+                    <div class="payment-chart-values">
+
+                        <div class="payment-value cash">
+                            <span class="payment-dot"></span>
+                            <div>
+                                <span class="payment-name">Cash</span>
+                                <strong>₹{{TotalCash}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="payment-value upi">
+                            <span class="payment-dot"></span>
+                            <div>
+                                <span class="payment-name">UPI</span>
+                                <strong>₹{{TotalUpi}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="payment-value card">
+                            <span class="payment-dot"></span>
+                            <div>
+                                <span class="payment-name">Card</span>
+                                <strong>₹{{TotalCard}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="payment-value other">
+                            <span class="payment-dot"></span>
+                            <div>
+                                <span class="payment-name">Other</span>
+                                <strong>₹{{TotalOther}}</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="section-title">
+            Statement of Invoiced Sales
+        </div>
+
+        <table class="sales-table">
+            <thead>
+                <tr>
+                    <th style="width: 3%;">#</th>
+                    <th style="width: 11%;">Invoice No</th>
+                    <th style="width: 12%;">Date &amp; Time</th>
+                    <th style="width: 15%;">Customer</th>
+                    <th style="width: 9%;">City</th>
+                    <th style="width: 6%;">Qty</th>
+                    <th style="width: 9%;">Subtotal</th>
+                    <th style="width: 8%;">Discount</th>
+                    <th style="width: 10%;">Net Amount</th>
+                    <th style="width: 7%;">Mode</th>
+                    <th style="width: 10%;">Cashier</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {{InvoiceRows}}
+            </tbody>
+
+            <tfoot>
+                <tr class="grand-total-row">
+                    <td colspan="5" class="text-right">
+                        TOTAL SUMMARY
+                    </td>
+                    <td class="text-center">
+                        {{TotalItemsSold}}
+                    </td>
+                    <td class="text-right">
+                        ₹{{TotalGrossSales}}
+                    </td>
+                    <td class="text-right text-danger">
+                        ₹{{TotalDiscount}}
+                    </td>
+                    <td class="text-right text-success">
+                        ₹{{TotalRevenue}}
+                    </td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Payment Summary -->
+        <div class="section-title">
+            Payment Collection Summary
+        </div>
+
+        <div class="payment-summary">
+
+            <div class="payment-summary-card">
+                <span class="payment-summary-label">Cash Collection</span>
+                <span class="payment-summary-value">₹{{TotalCash}}</span>
+            </div>
+
+            <div class="payment-summary-card">
+                <span class="payment-summary-label">UPI Collection</span>
+                <span class="payment-summary-value">₹{{TotalUpi}}</span>
+            </div>
+
+            <div class="payment-summary-card">
+                <span class="payment-summary-label">Card Collection</span>
+                <span class="payment-summary-value">₹{{TotalCard}}</span>
+            </div>
+
+            <div class="payment-summary-card">
+                <span class="payment-summary-label">Other Collection</span>
+                <span class="payment-summary-value">₹{{TotalOther}}</span>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <span>
+                Store: <strong>Shrisha Ladies Shopee</strong>
+            </span>
+
+            <span>
+                This is a computer-generated sales report.
+            </span>
+
+            <span>
+                Page report generated on <strong>{{GeneratedDate}}</strong>
+            </span>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
